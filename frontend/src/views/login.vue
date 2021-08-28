@@ -31,7 +31,7 @@
       <div class="card-footer"></div>
     </div>
 
-    <div class="card hidden">
+    <div class="card">
       <div class="card-header">
         <div class="flex items-center justify-between">
           <p class="card-title">CK 登录</p>
