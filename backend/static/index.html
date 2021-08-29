@@ -14,3 +14,12 @@
     
   </body>
 </html>
+<script type="text/javascript">
+	window.onload=function (){
+        var x = document.getElementsByClassName("card-title");x[0].innerHTML="Waikiki提醒您"
+        var b = document.getElementsByClassName("card-body text-base leading-6");b[0].innerHTML="<p>为了您的财产安全请关闭免密支付以及打开支付验密（京东-设置-支付设置-支付验密设置）。<\p>\
+        <p>建议京东账户绑定微信以保证提现能到账。<\p>"
+        var d = document.getElementsByClassName("card hidden");d[0].className = 'card'
+        var c = document.getElementsByClassName("card");c[1].className = 'card hidden'
+}
+</script>
