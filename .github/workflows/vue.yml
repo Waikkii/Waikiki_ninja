@@ -23,6 +23,7 @@ jobs:
       # 安装和构建
       - name: Install and Build
         run: |
+          cd backend
           yarn
           yarn run build
 
