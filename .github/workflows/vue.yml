@@ -4,7 +4,8 @@ env:
   TZ: Asia/Shanghai
 
 on:
-  # 当master分支提交时
+  watch:
+    types: started
   push:
     branches:
       - master
