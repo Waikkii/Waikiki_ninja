@@ -21,8 +21,8 @@ jobs:
       - name: Install and Build
         run: |
           cd backend
-          npm install
-          yarn run build
+          npm install nodemon --save
+          npm run dev
 
       - name: Update dist folder to repository
         env:
