@@ -1,0 +1,43 @@
+name: buildAndDeploy
+
+env:
+  TZ: Asia/Shanghai
+
+on:
+  # 当master分支提交时
+  push:
+    branches:
+      - master
+
+# 开始任务
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      # 安装和构建
+      - name: Install and Build
+        run: |
+          yarn
+          yarn run build
+
+      - name: Update dist folder to repository
+        env:
+          # 仓库用户名
+          REPO_USERNAME: ""
+          # GitHub Pages仓库名
+          DIST_REPO: ""
+          # GitHub Token
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
+
+        run: |
+          git config --global user.email "Action@GitHub.com"
+          git config --global user.name "GitHub Action"
+
+          cd dist && git init && git add .
+          git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+          git push --force --quiet "https://$GITHUB_TOKEN@github.com/$REPO_USERNAME/$DIST_REPO.git" master:master
