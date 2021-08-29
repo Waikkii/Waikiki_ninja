@@ -15,31 +15,24 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12'
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      # 安装和构建
       - name: Install and Build
         run: |
-          yarn
           cd backend
+          npm install
           yarn run build
 
       - name: Update dist folder to repository
         env:
-          # 仓库用户名
           REPO_USERNAME: "Waikkii"
-          # GitHub Pages仓库名
           DIST_REPO: "Waikiki_ninja"
-          # GitHub Token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: |
           git config --global user.email "Action@GitHub.com"
           git config --global user.name "GitHub Action"
-
           cd dist && git init && git add .
           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
           git push --force --quiet "https://$GITHUB_TOKEN@github.com/$REPO_USERNAME/$DIST_REPO.git" master:master
