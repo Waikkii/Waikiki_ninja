@@ -23,8 +23,8 @@ jobs:
       # 安装和构建
       - name: Install and Build
         run: |
-          cd backend
           yarn
+          cd backend
           yarn run build
 
       - name: Update dist folder to repository
