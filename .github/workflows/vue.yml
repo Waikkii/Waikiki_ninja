@@ -23,9 +23,9 @@ jobs:
       # 安装和构建
       - name: Install and Build
         run: |
-          npm install
+          yarn
           cd backend
-          npm run build
+          yarn run build
 
       - name: Update dist folder to repository
         env:
