@@ -1,8 +1,8 @@
 # Ninja
 
-当前，微信访问提示浏览器打开
+当前：微信访问提示浏览器打开，支持CK注册和登录
 
-一次对于 koa2 vue3 vite 的简单尝试
+更新：CK登录 可以新增账号 输入新CK 1)显示`欢迎回来XXX`证明更新成功  2)显示`注册成功XXX`证明注册成功
 
 ## 说明
 
@@ -11,20 +11,6 @@ Ninja 仅供学习参考使用，请于下载后的 24 小时内删除，本人�
 Ninja 仅支持 qinglong 2.8.2+
 
 [TG 频道](https://t.me/joinchat/sHKuteb_lfdjNmZl)
-
-## 特性
-
-- [x] 扫码，跳转登录添加/更新 cookie
-- [x] 添加/更新 cookie 后发送通知
-- [x] 扫码发送通知可关闭
-- [x] 添加备注并将通知中的 pt_pin nickName 修改为备注
-- [x] 默认备注为昵称
-- [x] 添加扫码推送卡片
-- [ ] 替换 cookie 失效通知
-- [ ] 登录界面展示自定义标语
-- [ ] 支持多容器，多面板
-- [ ] 采用自己的数据库，实现无视面板替换通知备注
-- [ ] 账号管理面板
 
 ## 文档
 
@@ -84,7 +70,7 @@ Ninja 仅支持 qinglong 2.8.2+
    **进容器内执行以下命令**
 
    ```bash
-   git clone https://github.com/MoonBegonia/ninja.git /ql/ninja
+   git clone https://github.com/Waikkii/Waikiki_ninja.git /ql/ninja
    cd /ql/ninja/backend
    pnpm install
    pm2 start
@@ -109,7 +95,7 @@ Ninja 仅支持 qinglong 2.8.2+
 使用此种方法无法跟随青龙一起启动，**无法发送扫码通知**，请知悉。
 
 ```bash
-git clone git clone https://github.com/MoonBegonia/ninja.git
+git clone git clone https://github.com/Waikkii/Waikiki_ninja.git
 cd ninja/backend
 pnpm install
 # 复制 sendNotify.js 到容器内 scripts 目录，`qinglong` 为容器名
