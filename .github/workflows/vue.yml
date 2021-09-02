@@ -22,16 +22,27 @@ jobs:
           cd frontend
           npm install
           npm run build
+          ls
+          
+#       - name: Commit changes
+#         uses: EndBug/add-and-commit@v4
+#         with:
+#           author_name: GITHUB_GENERATOR
+#           author_email: 1483523635@qq.com
+#           message: "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+#           add: "*.md"
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+#       - name: Update dist folder to repository
+#         env:
+#           REPO_USERNAME: "Waikkii"
+#           DIST_REPO: "Waikiki_ninja"
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update dist folder to repository
-        env:
-          REPO_USERNAME: "Waikkii"
-          DIST_REPO: "Waikiki_ninja"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        run: |
-          git config --global user.email "Action@GitHub.com"
-          git config --global user.name "GitHub Action"
-          cd frontend && git init && git add .
-          git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-          git push --force --quiet "https://$GITHUB_TOKEN@github.com/$REPO_USERNAME/$DIST_REPO.git" main:main
+#           run: |
+#           git config --global user.email "Action@GitHub.com"
+#           git config --global user.name "GitHub Action"
+#           cd frontend && git init && git add .
+#           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+#           git push --force --quiet "https://$GITHUB_TOKEN@github.com/$REPO_USERNAME/$DIST_REPO.git" main:main
