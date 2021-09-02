@@ -26,15 +26,15 @@ jobs:
           cd backend/static/assets
           ls
           
-#       - name: Commit changes
-#         uses: EndBug/add-and-commit@v4
-#         with:
-#           author_name: GITHUB_GENERATOR
-#           author_email: 1483523635@qq.com
-#           message: "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-#           add: "*.md"
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: Waikkii
+          author_email: 707647403@qq.com
+          message: "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+          add: "backend/static/assets"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
 #       - name: Update dist folder to repository
 #         env:
