@@ -1,4 +1,4 @@
-name: buildAndDeploy
+name: BuildAndCommit
 
 env:
   TZ: Asia/Shanghai
@@ -8,7 +8,6 @@ on:
     types: started
   workflow_dispatch:
 
-# 开始任务
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -31,20 +30,7 @@ jobs:
         with:
           author_name: Waikkii
           author_email: 707647403@qq.com
-          message: "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+          message: "GitHub Actions Auto Commit)"
           add: "backend/static/assets"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-#       - name: Update dist folder to repository
-#         env:
-#           REPO_USERNAME: "Waikkii"
-#           DIST_REPO: "Waikiki_ninja"
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#           run: |
-#           git config --global user.email "Action@GitHub.com"
-#           git config --global user.name "GitHub Action"
-#           cd frontend && git init && git add .
-#           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-#           git push --force --quiet "https://$GITHUB_TOKEN@github.com/$REPO_USERNAME/$DIST_REPO.git" main:main
