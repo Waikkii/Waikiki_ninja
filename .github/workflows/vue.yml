@@ -22,6 +22,8 @@ jobs:
           cd frontend
           npm install
           npm run build
+          cd ..
+          cd backend/static/assets
           ls
           
 #       - name: Commit changes
