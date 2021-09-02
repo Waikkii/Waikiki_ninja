@@ -4,14 +4,15 @@ env:
   TZ: Asia/Shanghai
 
 on:
-  push:
-    branches:
-      - main
+  watch:
+    types: started
+  workflow_dispatch:
 
 # 开始任务
 jobs:
   main:
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
         uses: actions/checkout@v2
