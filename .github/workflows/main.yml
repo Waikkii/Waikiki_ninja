@@ -27,6 +27,6 @@ jobs:
           author_name: Waikkii
           author_email: 707647403@qq.com
           message: "GitHub Actions Auto Commit"
-          add: "backend/static"
+          add: ""
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
