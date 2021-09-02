@@ -18,7 +18,6 @@ jobs:
 
       - name: Install and Build
         run: |
-          rm -rf backend
           rm -rf frontend
           
       - name: Commit changes
@@ -27,6 +26,6 @@ jobs:
           author_name: Waikkii
           author_email: 707647403@qq.com
           message: "GitHub Actions Auto Commit"
-          add: ""
+          add: "frontend"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
