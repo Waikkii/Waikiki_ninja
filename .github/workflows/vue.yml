@@ -18,9 +18,9 @@ jobs:
 
       - name: Install and Build
         run: |
-          yarn
           cd frontend
-          yarn run build
+          npm install
+          npm run build
 
       - name: Update dist folder to repository
         env:
