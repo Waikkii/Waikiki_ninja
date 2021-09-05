@@ -1,5 +1,9 @@
 # Ninja
 
+原作者：@MoonBegonia
+
+仓库地址：https://github.com/MoonBegonia/ninja
+
 当前：支持CK注册和登录
 
 更新：CK登录 可以新增账号 输入新CK 1)显示`欢迎回来XXX`证明更新成功  2)显示`注册成功XXX`证明注册成功，但是不能跳转
