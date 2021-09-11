@@ -187,6 +187,7 @@ pm2 start
 cd /ql/ninja
 git checkout .
 git pull
+pm2 start
 ```
 
 ## 如何删除Ninja
