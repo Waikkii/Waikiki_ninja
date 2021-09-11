@@ -15,7 +15,19 @@
         >
       </div>
     </div>
-
+    
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title">修改备注</p>
+      </div>
+      <div class="card-body text-center">
+        <el-input v-model="remark" size="small" clearable class="my-4 w-full" />
+      </div>
+      <div class="card-footer">
+        <el-button size="small" auto @click="changeremark">修改</el-button>
+      </div>
+    </div>
+    
     <div class="card">
       <div class="card-header">
         <p class="card-title">常见活动位置</p>
@@ -45,7 +57,7 @@
 </template>
 
 <script>
-import { getUserInfoAPI, delAccountAPI } from '@/api/index'
+import { getUserInfoAPI, delAccountAPI, remarkupdateAPI } from '@/api/index'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -55,6 +67,7 @@ export default {
     const route = useRoute()
 
     let data = reactive({
+      remark: '',
       nickName: undefined,
       timestamp: undefined,
     })
@@ -94,7 +107,18 @@ export default {
         }, 1000)
       }
     }
-
+    
+    const changeremark = async () => {
+      const eid = localStorage.getItem('eid')
+      const remark = data.remark
+      const body = await remarkupdateAPI({ eid, remark })
+      if (body.code !== 200) {
+        ElMessage.success(body.message)
+      } else {
+        ElMessage.error(body.message)
+      }
+    }
+    
     const openUrlWithJD = (url) => {
       const params = encodeURIComponent(
         `{"category":"jump","des":"m","action":"to","url":"${url}"}`
@@ -165,6 +189,7 @@ export default {
       getInfo,
       logout,
       delAccount,
+      changeremark,
       openUrlWithJD,
     }
   },
