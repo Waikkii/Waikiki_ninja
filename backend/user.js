@@ -435,6 +435,27 @@ module.exports = class User {
     }
     this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
   }
+  
+  async #getwskeyNickname(nocheck) {
+    const token = await api({
+      url: `https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&_=${Date.now()}&sceneval=2&g_login_type=1&g_ty=ls`,
+      headers: {
+        Accept: '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
+        Cookie: this.cookie,
+        Referer: 'https://home.m.jd.com/myJd/newhome.action',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+        Host: 'me-api.jd.com',
+      },
+    }).json();
+    if (!body.data?.userInfo && !nocheck) {
+      throw new UserError('获取用户信息失败，请检查您的 cookie ！', 201, 200);
+    }
+    this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
+  }
 
   #formatSetCookies(headers, body) {
     return new Promise((resolve) => {
