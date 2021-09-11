@@ -95,3 +95,85 @@ module.exports.delEnv = async (eid) => {
   }).json();
   return body;
 };
+
+//////////////////////////////////////////////////
+// wskey
+module.exports.getWSCKEnvs = async () => {
+  const token = await getToken();
+  const body = await api({
+    url: 'api/envs',
+    searchParams: {
+      searchValue: 'JD_WSCK',
+      t: Date.now(),
+    },
+    headers: {
+      Accept: 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+  }).json();
+  return body.data;
+};
+
+module.exports.getWSCKEnvsCount = async () => {
+  const data = await this.getWSCKEnvs();
+  return data.length;
+};
+
+module.exports.addWSCKEnv = async (jdwsck, remarks) => {
+  const token = await getToken();
+  const body = await api({
+    method: 'post',
+    url: 'api/envs',
+    params: { t: Date.now() },
+    json: [{
+      name: 'JD_WSCK',
+      value: jdwsck,
+      remarks,
+    }],
+    headers: {
+      Accept: 'application/json',
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  }).json();
+  return body;
+};
+
+module.exports.updateWSCKEnv = async (jdwsck, eid, remarks) => {
+  const token = await getToken();
+  const body = await api({
+    method: 'put',
+    url: 'api/envs',
+    params: { t: Date.now() },
+    json: {
+      name: 'JD_WSCK',
+      value: jdwsck,
+      _id: eid,
+      remarks,
+    },
+    headers: {
+      Accept: 'application/json',
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  }).json();
+  return body;
+};
+
+module.exports.delWSCKEnv = async (eid) => {
+  const token = await getToken();
+  const body = await api({
+    method: 'delete',
+    url: 'api/envs',
+    params: { t: Date.now() },
+    body: JSON.stringify([eid]),
+    headers: {
+      Accept: 'application/json',
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  }).json();
+  return body;
+};
+
+//////////////////////////////////////////////////
