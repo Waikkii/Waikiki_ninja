@@ -12,6 +12,8 @@ WSKEY录入原作者：@huiyi9420
 
 新特性：支持Github Action前端编译并自动替换文件。Fork之后：Action->BuildAndCommit->Run workflow->Run workfilow即可。
 
+想删除WSCK的提PR吧。
+
 ## 说明
 
 Ninja 仅供学习参考使用，请于下载后的 24 小时内删除，本人不对使用过程中出现的任何问题负责，包括但不限于 `数据丢失` `数据泄露`。
