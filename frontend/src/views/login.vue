@@ -3,6 +3,24 @@
     <div class="card">
       <div class="card-header">
         <div class="flex items-center justify-between">
+          <p class="card-title">Waikiki提醒您</p>
+        </div>
+      </div>
+      <div class="card-body text-left">
+        <p>为了您的财产安全请关闭免密支付以及打开支付验密（京东-设置-支付设置-支付验密设置）。</p>
+        <p>建议京东账户绑定微信以保证提现能到账。</p>
+        <p>由于京东异地登录限制，扫码获取cookie只有2小时有效期，因此暂时关闭扫码功能，现需手动抓取Cookie。</p><b>且有效期不长，平均3-5天，因此需要及时更新。</b>
+        <p>PC用户建议使用开源工具<a href="https://github.com/littleCareless/JD_Get_Cookie" target="_blank">JD_GET_COOKIE</a>获取cookie并在下方填写。</p>
+        <p>手机用户可以使用Alook浏览器登录<a href="https://m.jd.com/" target="_blank">JD官网</a>，并在菜单-工具箱-开发者工具-Cookies中获取（Android和iPhone通用）。</p>
+        <p>另外也可以使用抓包工具（iPhone：Stream，Android：HttpCanary）抓取京东app的ck，要注意pt_key和pt_pin字段是以app_open开头的。</p>
+        <p>cookie直接填入输入框即可，Ninja会自动正则提取pt_key和pt_pin。</p>
+      </div>
+      <div class="card-footet"></div>
+    </div>
+  
+    <div class="card hidden">
+      <div class="card-header">
+        <div class="flex items-center justify-between">
           <p class="card-title">扫码登录</p>
           <span
             class="ml-2 px-2 py-1 bg-gray-200 rounded-full font-normal text-xs"
@@ -27,7 +45,7 @@
       <div class="card-footer"></div>
     </div>
 
-    <div class="card hidden">
+    <div class="card">
       <div class="card-header">
         <div class="flex items-center justify-between">
           <p class="card-title">CK 登录</p>
@@ -150,9 +168,10 @@ export default {
         data.cookie.match(/pt_pin=(.*?);/)[1]
       if (ptKey && ptPin) {
         const body = await CKLoginAPI({ pt_key: ptKey, pt_pin: ptPin })
-        if (body.code === 200 && body.data.eid) {
+        if (body.data.eid) {
           localStorage.setItem('eid', body.data.eid)
           ElMessage.success(body.message)
+          router.push('/')
         } else {
           ElMessage.error(body.message || 'cookie 解析失败，请检查后重试！')
         }
