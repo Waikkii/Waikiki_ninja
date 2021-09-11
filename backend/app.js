@@ -46,6 +46,7 @@ router.get('/api/status', (ctx) => {
 
 router.get('/api/info', async (ctx) => {
   const data = await User.getPoolInfo();
+  debugger
   ctx.body = { data };
 });
 
@@ -113,6 +114,42 @@ router.get('/api/users', async (ctx) => {
     };
   }
 });
+
+///////////////////////////////////////////////
+
+router.post('/api/WSCKLogin', body(), async (ctx) => {
+  const body = ctx.request.body;
+  const user = new User(body);
+  const data = await user.WSCKLogin();
+  ctx.body = { data };
+});
+
+router.get('/api/WSCKUserinfo', async (ctx) => {
+  const query = ctx.query;
+  const eid = query.eid;
+  const user = new User({ eid });
+  const data = await user.getWSCKUserInfoByEid();
+  ctx.body = { data };
+});
+
+router.post('/api/WSCKDelaccount', body(), async (ctx) => {
+  const body = ctx.request.body;
+  const eid = body.eid;
+  const user = new User({ eid });
+  const data = await user.delWSCKUserByEid();
+  ctx.body = { data };
+});
+
+router.post('/api/updateWSCK/remark', body(), async (ctx) => {
+  const body = ctx.request.body;
+  const eid = body.eid;
+  const remark = body.remark;
+  const user = new User({ eid, remark });
+  const data = await user.updateWSCKRemark();
+  ctx.body = { data };
+});
+
+///////////////////////////////////////////////
 
 const port = process.env.NINJA_PORT || 5701;
 console.log('Start Ninja success! listening port: ' + port);
