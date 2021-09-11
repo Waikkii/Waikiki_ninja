@@ -24,7 +24,7 @@
               <p class="card-subtitle">——在api.m.jd.com域名下找POST请求大概率能找到wskey。</p>
               <p class="card-subtitle">wskey在录入后立马上线，系统会在指定时间检查wskey，有效则自动转换出cookie登录</p>
               <p class="card-subtitle">cookie失效后，也会在系统设定的指定时间内自动转换出新的cookie，实现一次录入长期有效</p>
-              <b>删除账号会一并删除WSCK。</b>
+              <b>删除账号会一并删除所有相关WSCK。</b>
             </div>
       </div>
       <div class="card-body text-center">
@@ -32,7 +32,6 @@
       </div>
       <div class="card-footer">
         <el-button type="success" size="small" auto @click="WSCKLogin">录入WSCK</el-button>
-        <el-button type="danger" size="small" auto @click="delWSCKAccount">删除WSCK</el-button>
       </div>
     </div>
     
@@ -77,7 +76,7 @@
 </template>
 
 <script>
-import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI, WSCKDelaccountAPI } from '@/api/index'
+import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI } from '@/api/index'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -127,16 +126,6 @@ export default {
         setTimeout(() => {
           logout()
         }, 1000)
-      }
-    }
-    
-    const delWSCKAccount = async () => {
-      const eid = WSCKbody.data.eid
-      const body = await WSCKDelaccountAPI({ eid })
-      if (body.code !== 200) {
-        ElMessage.error(body.message)
-      } else {
-        ElMessage.success(body.message)
       }
     }
     
@@ -242,9 +231,23 @@ export default {
       delAccount,
       changeremark,
       WSCKLogin,
-      delWSCKAccount,
       openUrlWithJD,
     }
   },
 }
 </script>
+
+<style scoped>
+/*没被访问过之前*/
+ a:link{
+            color: #B321FF;
+        }
+        /*默认*/
+ a{
+            color: #EECDFF;
+        }
+        /*鼠标掠过*/
+ a:hover{
+            color: red;
+        }
+</style>
