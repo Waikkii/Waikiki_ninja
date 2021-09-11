@@ -4,7 +4,8 @@
 const got = require('got');
 require('dotenv').config();
 const QRCode = require('qrcode');
-const { addEnv, delEnv, getEnvs, getEnvsCount, updateEnv } = require('./ql');
+// 新增  , addWSCKEnv, delWSCKEnv, getWSCKEnvs, getWSCKEnvsCount, updateWSCKEnv
+const { addEnv, delEnv, getEnvs, getEnvsCount, updateEnv , addWSCKEnv, delWSCKEnv, getWSCKEnvs, getWSCKEnvsCount, updateWSCKEnv } = require('./ql');
 const path = require('path');
 const qlDir = process.env.QL_DIR || '/ql';
 const notifyFile = path.join(qlDir, 'shell/notify.sh');
@@ -20,6 +21,9 @@ module.exports = class User {
   ua;
   pt_key;
   pt_pin;
+  pin;// 新增变量
+  wskey;// 新增变量
+  jdwsck;// 新增变量
   cookie;
   eid;
   timestamp;
@@ -30,8 +34,8 @@ module.exports = class User {
   QRCode;
   remark;
   #s_token;
-
-  constructor({ token, okl_token, cookies, pt_key, pt_pin, cookie, eid, remarks, remark, ua }) {
+  // 新增wskey构造入参
+  constructor({ token, okl_token, cookies, pt_key, pt_pin, cookie, eid, remarks, remark, ua, pin, wskey, jdwsck}) {
     this.token = token;
     this.okl_token = okl_token;
     this.cookies = cookies;
@@ -54,6 +58,28 @@ module.exports = class User {
     if (remarks) {
       this.remark = remarks.match(/remark=(.*?);/) && remarks.match(/remark=(.*?);/)[1];
     }
+/////////////////////////////////////////////////
+    // 新增pin
+    this.pin = pin;
+    // 新增wskey
+    this.wskey = wskey;
+    // 新增 jdwsck
+    this.jdwsck = jdwsck;
+    // 新增如果wskey和pin不是空则产生jdwsck
+    if (pin && wskey) {
+      this.jdwsck = 'pin=' + this.pin + ';wskey=' + this.wskey + ';';
+    }
+
+    // 新增如果备注是空则默认取pt_pin作为备注
+    if (this.jdwsck && this.remark === null || this.remark === '') {
+      this.remark = this.pin;
+    }
+
+    // 新增如果nickName是空默认取pt_pin作为备注
+    if (this.jdwsck && this.nickName === null || this.nickName === '') {
+      this.nickName = this.pin;
+    }
+/////////////////////////////////////////////////
   }
 
   async getQRConfig() {
@@ -113,6 +139,12 @@ module.exports = class User {
   }
 
   async checkQRLogin() {
+    if(true){
+      return {
+        errcode: 200,
+        message: '扫码登录已关闭，请自行抓包手动CK登录',
+      };
+    }
     if (!this.token || !this.okl_token || !this.cookies) {
       throw new Error('初始化登录请求失败！');
     }
@@ -182,7 +214,7 @@ module.exports = class User {
       if (body.code !== 200) {
         throw new UserError(body.message || '更新账户错误，请重试', 221, body.code || 200);
       }
-      this.timestamp = body.data.timestamp;
+      this.timestamp = body.data[0].timestamp;
       message = `欢迎回来，${this.nickName}`;
       this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 已更新 CK`);
     }
@@ -251,12 +283,121 @@ module.exports = class User {
     };
   }
 
+/////////////////////////////////////////////////
+  // 新增同步方法
+  async WSCKLogin() {
+    let message;
+    // await this.#getNickname(); // wskey不知道怎么检查用户信息，暂时屏蔽
+    const envs = await getWSCKEnvs();// 1
+    const poolInfo = await User.getPoolInfo();
+    const env = await envs.find((item) => item.value.match(/pin=(.*?);/)[1] === this.pin);
+    if (!env) {
+      // 新用户
+      if (!poolInfo.allowWSCKAdd) {
+        throw new UserError('管理员已关闭注册，去其他地方看看吧', 210, 200);
+      } else if (poolInfo.marginWSCKCount === 0) {
+        throw new UserError('本站已到达注册上限，你来晚啦', 211, 200);
+      } else {
+        const remarks = `remark=${this.pin};`;
+        const body = await addWSCKEnv(this.jdwsck, remarks);
+        if (body.code !== 200) {
+          throw new UserError(body.message || '添加账户错误，请重试', 220, body.code || 200);
+        }
+        this.eid = body.data[0]._id;
+        this.timestamp = body.data[0].timestamp;
+        message = `录入成功，${this.pin}`;
+        this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} WSCK 添加成功`);
+      }
+    } else {
+      this.eid = env._id;
+      const body = await updateWSCKEnv(this.jdwsck, this.eid);
+      if (body.code !== 200) {
+        throw new UserError(body.message || '更新账户错误，请重试', 221, body.code || 200);
+      }
+      this.timestamp = body.data[0].timestamp;
+      message = `欢迎回来，${this.pin}`;
+      this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} 已更新 WSCK`);
+    }
+    return {
+      nickName: this.nickName,
+      eid: this.eid,
+      timestamp: this.timestamp,
+      message,
+    };
+  }
+
+  async getWSCKUserInfoByEid() {
+    const envs = await getWSCKEnvs();
+    const env = await envs.find((item) => item._id === this.eid);
+    if (!env) {
+      throw new UserError('没有找到这个账户，重新登录试试看哦', 230, 200);
+    }
+    this.jdwsck = env.value;
+    this.timestamp = env.timestamp;
+    const remarks = env.remarks;
+    if (remarks) {
+      this.remark = remarks.match(/remark=(.*?);/) && remarks.match(/remark=(.*?);/)[1];
+    }
+    await this.#getNickname();
+    return {
+      nickName: this.nickName,
+      eid: this.eid,
+      timestamp: this.timestamp,
+      remark: this.remark,
+    };
+  }
+
+  async updateWSCKRemark() {
+    if (!this.eid || !this.remark || this.remark.replace(/(^\s*)|(\s*$)/g, '') === '') {
+      throw new UserError('参数错误', 240, 200);
+    }
+
+    const envs = await getWSCKEnvs();
+    const env = await envs.find((item) => item._id === this.eid);
+    if (!env) {
+      throw new UserError('没有找到这个wskey账户，重新登录试试看哦', 230, 200);
+    }
+    this.jdwsck = env.value;
+
+    const remarks = `remark=${this.remark};`;
+
+    const updateEnvBody = await updateWSCKEnv(this.jdwsck, this.eid, remarks);
+    if (updateEnvBody.code !== 200) {
+      throw new UserError('更新/上传备注出错，请重试', 241, 200);
+    }
+
+    return {
+      message: '更新/上传备注成功',
+    };
+  }
+
+  async delWSCKUserByEid() {
+    await this.getWSCKUserInfoByEid();
+    const body = await delWSCKEnv(this.eid);
+    if (body.code !== 200) {
+      throw new UserError(body.message || '删除账户错误，请重试', 240, body.code || 200);
+    }
+    this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 删号跑路了,CK将无法自动更新并会在不知道那天内自动失效`);
+    return {
+      message: 'wskey账户已移除',
+    };
+  }
+
+/////////////////////////////////////////////////
+
   static async getPoolInfo() {
     const count = await getEnvsCount();
+    const countWSCK = await getWSCKEnvsCount();
     const allowCount = (process.env.ALLOW_NUM || 40) - count;
+    const allowWSCKCount = (process.env.ALLOW_WSCK_NUM || 40) - countWSCK;
     return {
       marginCount: allowCount >= 0 ? allowCount : 0,
-      allowAdd: Boolean(process.env.ALLOW_ADD) || true,
+      marginWSCKCount: allowWSCKCount >= 0 ? allowWSCKCount : 0,
+      allowAdd: Boolean(process.env.ALLOW_ADD) || false,
+      allowWSCKAdd: Boolean(process.env.ALLOW_WSCK_ADD) || false,
+      showQR: Boolean(process.env.SHOW_QR) || false,
+      showWSCK: Boolean(process.env.SHOW_WSCK) || false,
+      showCK: Boolean(process.env.SHOW_CK) || false,
     };
   }
 
