@@ -6,7 +6,7 @@
           <p class="card-title">Waikiki提醒您</p>
         </div>
       </div>
-      <div class="card-body text-left">
+      <div class="card-body text-base leading-6">
         <p>为了您的财产安全请关闭免密支付以及打开支付验密（京东-设置-支付设置-支付验密设置）。</p>
         <p>建议京东账户绑定微信以保证提现能到账。</p>
         <p>由于京东异地登录限制，扫码获取cookie只有2小时有效期，因此暂时关闭扫码功能，现需手动抓取Cookie。</p><b>且有效期不长，平均3-5天，因此需要及时更新。</b>
