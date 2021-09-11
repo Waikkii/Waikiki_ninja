@@ -4,8 +4,6 @@ env:
   TZ: Asia/Shanghai
 
 on:
-  watch:
-    types: started
   workflow_dispatch:
 
 jobs:
