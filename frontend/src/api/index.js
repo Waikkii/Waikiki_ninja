@@ -30,6 +30,10 @@ export function delAccountAPI(body) {
   return api.post('delaccount', { json: body }).json()
 }
 
+export function remarkupdateAPI(body) {
+  return api.post('update/remark', { json: body }).json()
+}
+
 export function WSCKLoginAPI(body) {
   return api.post('WSCKLogin', { json: body }).json()
 }
