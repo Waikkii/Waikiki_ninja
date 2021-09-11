@@ -11,6 +11,7 @@
         <p>建议京东账户绑定微信以保证提现能到账。</p>
         <p>由于京东异地登录限制，扫码获取cookie只有2小时有效期，因此暂时关闭扫码功能，现需手动抓取Cookie。</p>
         <b>且有效期不长，平均3-5天，因此需要及时更新。</b>
+        <b>安全起见，WSCK可以在CK登录后录入，期限半永久。</b>
       </div>
       <div class="card-footet"></div>
     </div>
@@ -46,7 +47,7 @@
           <span class="ml-2 px-2 py-1 bg-gray-200 rounded-full font-normal text-xs">余量：{{ marginWSCKCount }}</span>
         </div>
         <div class="card-body text-base leading-6">
-          <b>wskey有效期长达一年，请联系管理员确认使用</b>
+          <b>wskey有效期长达一年，请联系管理员确认使用（删不掉，慎用）</b>
           <p>用户须手动提取pin和wskey，格式如："pt_pin=xxxxxx;wskey=xxxxxxxxxx;"。</p>
           <p class="card-subtitle">——IOS用户手机抓包APP&emsp;<a style="" href="https://apps.apple.com/cn/app/stream/id1312141691" target="_blank" id="downiOSApp">点击跳转安装</a> </p>
           <p class="card-subtitle">——在api.m.jd.com域名下找POST请求大概率能找到wskey。</p>
@@ -119,7 +120,7 @@ export default {
       jdwsck: undefined,
       showQR:false,
       showWSCK:false,
-      showCK:false,
+      showCK:true,
 
     })
 
