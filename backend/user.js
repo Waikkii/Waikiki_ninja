@@ -287,7 +287,7 @@ module.exports = class User {
   // 新增同步方法
   async WSCKLogin() {
     let message;
-    // await this.#getNickname(); // wskey不知道怎么检查用户信息，暂时屏蔽
+    // await this.#getNickname(); // wskey检查用户信息太复杂，暂时用pin代替
     const envs = await getWSCKEnvs();// 1
     const poolInfo = await User.getPoolInfo();
     const env = await envs.find((item) => item.value.match(/pin=(.*?);/)[1] === this.pin);
@@ -319,7 +319,7 @@ module.exports = class User {
       this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} 已更新 WSCK`);
     }
     return {
-      nickName: this.nickName,
+      nickName: this.pin,
       eid: this.eid,
       timestamp: this.timestamp,
       message,
@@ -338,9 +338,9 @@ module.exports = class User {
     if (remarks) {
       this.remark = remarks.match(/remark=(.*?);/) && remarks.match(/remark=(.*?);/)[1];
     }
-    await this.#getNickname();
+    // await this.#getNickname();
     return {
-      nickName: this.nickName,
+      nickName: this.pin,
       eid: this.eid,
       timestamp: this.timestamp,
       remark: this.remark,
