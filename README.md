@@ -8,6 +8,8 @@
 
 更新：支持Github Action前端编译并自动替换文件。Fork之后：Action->BuildAndCommit->Run workflow->Run workfilow即可。
 
+为解决：“您的账号存在风险..” 欢迎PR
+
 ## 说明
 
 Ninja 仅供学习参考使用，请于下载后的 24 小时内删除，本人不对使用过程中出现的任何问题负责，包括但不限于 `数据丢失` `数据泄露`。
