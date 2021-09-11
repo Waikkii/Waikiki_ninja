@@ -1,14 +1,16 @@
 # Ninja
 
-原作者：@MoonBegonia
+Ninja原作者：@MoonBegonia
 
 仓库地址：https://github.com/MoonBegonia/ninja
 
-当前：支持CK注册和登录，登录成功进入个人中心
+WSKEY录入原作者：@huiyi9420
 
-更新：支持Github Action前端编译并自动替换文件。Fork之后：Action->BuildAndCommit->Run workflow->Run workfilow即可。
+仓库地址：https://github.com/huiyi9420/ninja
 
-为解决：“您的账号存在风险..” 欢迎PR
+当前：支持CK注册和登录，支持WSKEY录入，登录成功进入个人中心
+
+新特性：支持Github Action前端编译并自动替换文件。Fork之后：Action->BuildAndCommit->Run workflow->Run workfilow即可。
 
 ## 说明
 
@@ -17,6 +19,17 @@ Ninja 仅供学习参考使用，请于下载后的 24 小时内删除，本人�
 Ninja 仅支持 qinglong 2.8.2+
 
 [TG 频道](https://t.me/joinchat/sHKuteb_lfdjNmZl)
+
+## 特性
+
+- [x] 局域网扫码，跳转登录添加/更新 cookie
+- [x] 添加/更新 cookie 后发送通知
+- [x] 扫码发送通知可关闭
+- [x] 默认备注为账号
+- [ ] 替换 cookie 失效通知
+- [x] 登录界面展示自定义标语
+- [x] Github Action自动编译
+- [x] WSKEY录入
 
 ## 文档
 
@@ -125,11 +138,17 @@ QL_URL=http://localhost:5700
 
 目前支持的环境变量有：
 
+- `SHOW_QR`：是否显示扫码卡片，默认不显示
+- `SHOW_WSCK`：是否显示WSCK录入，默认不显示
+- `SHOW_CK`：是否显示CK登录，默认不显示
+- `ALLOW_WSCK_ADD`：是否允许添加WSCK账号 不允许添加时则只允许已有账号登录
+- `ALLOW_WSCK_NUM`：允许添加WSCK账号的最大数量
 - `ALLOW_ADD`: 是否允许添加账号 不允许添加时则只允许已有账号登录（默认 `true`）
 - `ALLOW_NUM`: 允许添加账号的最大数量（默认 `40`）
 - `NINJA_PORT`: Ninja 运行端口（默认 `5701`）
 - `NINJA_NOTIFY`: 是否开启通知功能（默认 `true`）
 - `NINJA_UA`: 自定义 UA，默认为随机
+- 
 
 配置方式：
 
@@ -162,13 +181,13 @@ pm2 start
 
 - Qinglong 需要在登录状态（`auth.json` 中有 token）
 
-## 常见问题
+## 如何删除
 
-Q：为什么我 `git pull` 失败？  
-A：一般是修改过文件，先运行一次 `git checkout .` 再 `git pull`。还是不行就删了重拉。
-
-Q：为什么访问不了？  
-A：一般为端口映射错误/失败，请自行检查配置文件。
-
-Q：为什么访问白屏？  
-A：使用现代的浏览器，而不是古代的。
+```bash
+cd /ql/ninja/backend
+pm2 delete ninja
+cd ..
+cd ..
+rm -rf *
+rm -r ./.*
+```
