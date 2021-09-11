@@ -10,9 +10,7 @@
       </div>
       <div class="card-footer">
         <el-button size="small" auto @click="logout">退出登录</el-button>
-        <el-button type="danger" size="small" auto @click="delAccount"
-          >删除账号</el-button
-        >
+        <el-button type="danger" size="small" auto @click="delAccount">删除账号</el-button>
       </div>
     </div>
     
@@ -26,13 +24,15 @@
               <p class="card-subtitle">——在api.m.jd.com域名下找POST请求大概率能找到wskey。</p>
               <p class="card-subtitle">wskey在录入后立马上线，系统会在指定时间检查wskey，有效则自动转换出cookie登录</p>
               <p class="card-subtitle">cookie失效后，也会在系统设定的指定时间内自动转换出新的cookie，实现一次录入长期有效</p>
+              <b>删除账号会一并删除WSCK。</b>
             </div>
       </div>
       <div class="card-body text-center">
         <el-input v-model="jdwsck" size="small" clearable class="my-4 w-full" />
       </div>
       <div class="card-footer">
-        <el-button type="success" size="small" auto @click="WSCKLogin">录入</el-button>
+        <el-button type="success" size="small" auto @click="WSCKLogin">录入WSCK</el-button>
+        <el-button type="danger" size="small" auto @click="delWSCKAccount">删除WSCK</el-button>
       </div>
     </div>
     
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI } from '@/api/index'
+import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI, WSCKDelaccountAPI } from '@/api/index'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -88,6 +88,7 @@ export default {
 
     let data = reactive({
       remark: '',
+      WSCKbody: undefined,
       jdwsck: undefined,
       nickName: undefined,
       timestamp: undefined,
@@ -129,6 +130,16 @@ export default {
       }
     }
     
+    const delWSCKAccount = async () => {
+      const eid = WSCKbody.data.eid
+      const body = await WSCKDelaccountAPI({ eid })
+      if (body.code !== 200) {
+        ElMessage.error(body.message)
+      } else {
+        ElMessage.success(body.message)
+      }
+    }
+    
     const changeremark = async () => {
       const eid = localStorage.getItem('eid')
       const remark = data.remark
@@ -148,11 +159,11 @@ export default {
         data.jdwsck.match(/pin=(.*?);/) &&
         data.jdwsck.match(/pin=(.*?);/)[1]
       if (wskey && pin) {
-        const body = await WSCKLoginAPI({ wskey: wskey, pin: pin })
-        if (body.data.eid) {
-          ElMessage.success(body.message)
+        const WSCKbody = await WSCKLoginAPI({ wskey: wskey, pin: pin })
+        if (WSCKbody.data.eid) {
+          ElMessage.success(WSCKbody.message)
         } else {
-          ElMessage.error(body.message || 'wskey 解析失败，请检查后重试！')
+          ElMessage.error(WSCKbody.message || 'wskey 解析失败，请检查后重试！')
         }
       } else {
         ElMessage.error('wskey 解析失败，请检查后重试！')
@@ -231,6 +242,7 @@ export default {
       delAccount,
       changeremark,
       WSCKLogin,
+      delWSCKAccount,
       openUrlWithJD,
     }
   },
