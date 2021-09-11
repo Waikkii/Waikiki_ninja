@@ -181,7 +181,15 @@ pm2 start
 
 - Qinglong 需要在登录状态（`auth.json` 中有 token）
 
-## 如何删除
+## 如何更新Ninja
+
+```bash
+cd /ql/ninja
+git checkout .
+git pull
+```
+
+## 如何删除Ninja
 
 ```bash
 cd /ql/ninja/backend
