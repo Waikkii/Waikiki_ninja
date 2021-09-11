@@ -24,7 +24,7 @@
         <el-input v-model="remark" size="small" clearable class="my-4 w-full" />
       </div>
       <div class="card-footer">
-        <el-button size="small" auto @click="changeremark">修改</el-button>
+        <el-button type="success" size="small" auto @click="changeremark">修改</el-button>
       </div>
     </div>
     
