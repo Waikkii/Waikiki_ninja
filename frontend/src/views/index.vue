@@ -18,7 +18,8 @@
       <div class="card-header">
           <p class="card-title">WSCK 录入</p>
             <div class="card-body text-base leading-6">
-              <b>wskey有效期长达一年，请联系管理员确认使用。</b>
+              <b>wskey有效期长达一年，请联系管理员确认使用，慎重！</b>
+              <p>代码没空改了，鸽了，想删WSCK改密码。</p>
               <p>用户须手动提取pin和wskey，格式如："pt_pin=xxxxxx;wskey=xxxxxxxxxx;"。</p>
               <p class="card-subtitle">——IOS用户手机抓包APP&emsp;<a style="" href="https://apps.apple.com/cn/app/stream/id1312141691" target="_blank" id="downiOSApp">点击跳转安装</a> </p>
               <p class="card-subtitle">——在api.m.jd.com域名下找POST请求大概率能找到wskey。</p>
