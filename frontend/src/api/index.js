@@ -29,3 +29,17 @@ export function getUserInfoAPI(eid) {
 export function delAccountAPI(body) {
   return api.post('delaccount', { json: body }).json()
 }
+
+export function WSCKLoginAPI(body) {
+  return api.post('WSCKLogin', { json: body }).json()
+}
+
+export function getWSCKUserinfoAPI(eid) {
+  const searchParams = new URLSearchParams()
+  searchParams.set('eid', eid)
+  return api.get('WSCKUserinfo', { searchParams: searchParams }).json()
+}
+
+export function WSCKDelaccountAPI(body) {
+  return api.post('WSCKDelaccount', { json: body }).json()
+}
