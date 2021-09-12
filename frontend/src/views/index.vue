@@ -146,20 +146,24 @@ export default {
     }
     
     const changeremark = async () => {
-      const eid = localStorage.getItem('eid')
-      const remark = data.remark
-      const body = await remarkupdateAPI({ eid, remark })
-      if (body.code !== 200) {
-        ElMessage.success(body.message)
-      } else {
-        ElMessage.error(body.message)
+      if (eid) {
+        const eid = localStorage.getItem('eid')
+        const remark = data.remark
+        const body = await remarkupdateAPI({ eid, remark })
+        if (body.code !== 200) {
+          ElMessage.success(body.message)
+        } else {
+          ElMessage.error(body.message)
+        }
       }
-      const wseid = localStorage.getItem('wseid')
-      const wsbody = await remarkupdateWSCKAPI({ wseid, remark })
-      if (wsbody.code !== 200) {
-        ElMessage.success(wsbody.message)
-      } else {
-        ElMessage.error(wsbody.message)
+      if (wseid) {
+        const wseid = localStorage.getItem('wseid')
+        const wsbody = await remarkupdateWSCKAPI({ wseid, remark })
+        if (wsbody.code !== 200) {
+          ElMessage.success(wsbody.message)
+        } else {
+          ElMessage.error(wsbody.message)
+        }
       }
     }
     
