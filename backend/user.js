@@ -2,6 +2,7 @@
 'use strict';
 
 const got = require('got');
+const got1 = require('got');
 require('dotenv').config();
 const QRCode = require('qrcode');
 // 新增  , addWSCKEnv, delWSCKEnv, getWSCKEnvs, getWSCKEnvsCount, updateWSCKEnv
@@ -24,6 +25,8 @@ module.exports = class User {
   pin;// 新增变量
   wskey;// 新增变量
   jdwsck;// 新增变量
+  code;// 新增变量
+  msg;// 新增变量
   cookie;
   eid;
   timestamp;
@@ -203,10 +206,10 @@ module.exports = class User {
         if (body.code !== 200) {
           throw new UserError(body.message || '添加账户错误，请重试', 220, body.code || 200);
         }
-        this.eid = body.data[0]._id;
-        this.timestamp = body.data[0].timestamp;
+        this.eid = body.data._id;
+        this.timestamp = body.data.timestamp;
         message = `注册成功，${this.nickName}`;
-        this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 已上线`);
+        this.#sendNotify('工具人 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 已上线`);
       }
     } else {
       this.eid = env._id;
@@ -216,7 +219,7 @@ module.exports = class User {
       }
       this.timestamp = body.data.timestamp;
       message = `欢迎回来，${this.nickName}`;
-      this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 已更新 CK`);
+      this.#sendNotify('工具人 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 已更新 CK`);
     }
     return {
       nickName: this.nickName,
@@ -277,7 +280,7 @@ module.exports = class User {
     if (body.code !== 200) {
       throw new UserError(body.message || '删除账户错误，请重试', 240, body.code || 200);
     }
-    this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 删号跑路了`);
+    this.#sendNotify('工具人 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 删号跑路了`);
     return {
       message: '账户已移除',
     };
@@ -287,7 +290,7 @@ module.exports = class User {
   // 新增同步方法
   async WSCKLogin() {
     let message;
-    // await this.#getNickname(); // wskey检查用户信息太复杂，暂时用pin代替
+    await this.#getWSCKCheck();
     const envs = await getWSCKEnvs();// 1
     const poolInfo = await User.getPoolInfo();
     const env = await envs.find((item) => item.value.match(/pin=(.*?);/)[1] === this.pin);
@@ -298,15 +301,15 @@ module.exports = class User {
       } else if (poolInfo.marginWSCKCount === 0) {
         throw new UserError('本站已到达注册上限，你来晚啦', 211, 200);
       } else {
-        const remarks = `remark=${this.pin};`;
+        const remarks = `remark=${this.nickName};`;
         const body = await addWSCKEnv(this.jdwsck, remarks);
         if (body.code !== 200) {
           throw new UserError(body.message || '添加账户错误，请重试', 220, body.code || 200);
         }
-        this.eid = body.data[0]._id;
-        this.timestamp = body.data[0].timestamp;
+        this.eid = body.data._id;
+        this.timestamp = body.data.timestamp;
         message = `录入成功，${this.pin}`;
-        this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} WSCK 添加成功`);
+        this.#sendNotify('工具人 运行通知', `用户 ${this.pin} WSCK 添加成功`);
       }
     } else {
       this.eid = env._id;
@@ -315,11 +318,13 @@ module.exports = class User {
         throw new UserError(body.message || '更新账户错误，请重试', 221, body.code || 200);
       }
       this.timestamp = body.data.timestamp;
-      message = `欢迎回来，${this.pin}`;
-      this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} 已更新 WSCK`);
+      message = `欢迎回来，${this.nickName}`;
+      this.#sendNotify('工具人 运行通知', `用户 ${this.pin} 已更新 WSCK`);
     }
+
+
     return {
-      nickName: this.pin,
+      nickName: this.nickName,
       eid: this.eid,
       timestamp: this.timestamp,
       message,
@@ -338,9 +343,9 @@ module.exports = class User {
     if (remarks) {
       this.remark = remarks.match(/remark=(.*?);/) && remarks.match(/remark=(.*?);/)[1];
     }
-    // await this.#getNickname();
+    await this.#getNickname();
     return {
-      nickName: this.pin,
+      nickName: this.nickName,
       eid: this.eid,
       timestamp: this.timestamp,
       remark: this.remark,
@@ -377,7 +382,7 @@ module.exports = class User {
     if (body.code !== 200) {
       throw new UserError(body.message || '删除账户错误，请重试', 240, body.code || 200);
     }
-    this.#sendNotify('Ninja 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 删号跑路了,CK将无法自动更新并会在不知道那天内自动失效`);
+    this.#sendNotify('工具人 运行通知', `用户 ${this.nickName}(${decodeURIComponent(this.pt_pin)}) 删号跑路了,CK将无法自动更新并会在不知道那天内自动失效`);
     return {
       message: 'wskey账户已移除',
     };
@@ -430,28 +435,9 @@ module.exports = class User {
         Host: 'me-api.jd.com',
       },
     }).json();
-    if (!body.data?.userInfo && !nocheck) {
-      throw new UserError('获取用户信息失败，请检查您的 cookie ！', 201, 200);
-    }
-    this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
-  }
-  
-  async #getwskeyNickname(nocheck) {
-    const token = await api({
-      url: `https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&_=${Date.now()}&sceneval=2&g_login_type=1&g_ty=ls`,
-      headers: {
-        Accept: '*/*',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'zh-cn',
-        Connection: 'keep-alive',
-        Cookie: this.cookie,
-        Referer: 'https://home.m.jd.com/myJd/newhome.action',
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
-        Host: 'me-api.jd.com',
-      },
-    }).json();
-    if (!body.data?.userInfo && !nocheck) {
+    if (!body.data?.userInfo && this.jdwsck) {
+      throw new UserError('获取用户信息失败，请检查您的 wskey ！', 201, 200);
+    } else if (!body.data?.userInfo && !nocheck) {
       throw new UserError('获取用户信息失败，请检查您的 cookie ！', 201, 200);
     }
     this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
@@ -475,7 +461,7 @@ module.exports = class User {
   #sendNotify(title, content) {
     const notify = process.env.NINJA_NOTIFY || true;
     if (!notify) {
-      console.log('Ninja 通知已关闭\n' + title + '\n' + content + '\n' + '已跳过发送');
+      console.log('工具人 通知已关闭\n' + title + '\n' + content + '\n' + '已跳过发送');
       return;
     }
     exec(`${notifyFile} "${title}" "${content}"`, (error, stdout, stderr) => {
@@ -486,6 +472,55 @@ module.exports = class User {
       }
     });
   }
+//////////////////////////////////////////////
+  async #getWSCKCheck() {
+    const s = await api({url: `https://pan.smxy.xyz/sign`}).json();
+    const clientVersion = s['clientVersion']
+    const client = s['client']
+    const sv = s['sv']
+    const st = s['st']
+    const uuid = s['uuid']
+    const sign = s['sign']
+    if (!sv||!st||!uuid||!sign) {
+      throw new UserError('获取签名失败，请等待工具人修理 ！', 200, 200);
+    }
+    const body = await api({
+      method: 'POST',
+      url: `https://api.m.jd.com/client.action?functionId=genToken&clientVersion=${clientVersion}&client=${client}&uuid=${uuid}&st=${st}&sign=${sign}&sv=${sv}`,
+      body: 'body=%7B%22action%22%3A%22to%22%2C%22to%22%3A%22https%253A%252F%252Fplogin.m.jd.com%252Fcgi-bin%252Fm%252Fthirdapp_auth_page%253Ftoken%253DAAEAIEijIw6wxF2s3bNKF0bmGsI8xfw6hkQT6Ui2QVP7z1Xg%2526client_type%253Dandroid%2526appid%253D879%2526appup_type%253D1%22%7D&',
+      headers: {
+        Cookie: this.jdwsck,
+        'User-Agent': 'okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1440x3007;os/11;network/wifi;',
+        'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Charset': 'UTF-8',
+        'Accept-Encoding': 'br,gzip,deflate'
+      },
+    }).json();
+    const response = await got1({
+      followRedirect:false,
+      url: `https://un.m.jd.com/cgi-bin/app/appjmp?tokenKey=${body['tokenKey']}&to=https://plogin.m.jd.com/cgi-bin/m/thirdapp_auth_page?token=AAEAIEijIw6wxF2s3bNKF0bmGsI8xfw6hkQT6Ui2QVP7z1Xg&client_type=android&appid=879&appup_type=1`,
+      headers: {
+        'User-Agent': 'okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1440x3007;os/11;network/wifi;',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+        'Accept-Charset': 'UTF-8',
+        'Accept-Encoding': 'br,gzip,deflate'
+      },
+    });
+    const headers = response.headers;
+    if (headers['set-cookie']) {
+      const pt_key = headers['set-cookie'][2];
+      this.pt_key = pt_key.substring(pt_key.indexOf('=') + 1, pt_key.indexOf(';'));
+      const pt_pin = headers['set-cookie'][3];
+      this.pt_pin = pt_pin.substring(pt_pin.indexOf('=') + 1, pt_pin.indexOf(';'));
+    }
+    if (this.pt_key&&this.pt_pin) {
+      this.cookie = 'pt_key=' + this.pt_key + ';pt_pin=' + this.pt_pin + ';';
+      const result = await this.CKLogin();
+      result.errcode = 0;
+      return result;
+    }
+  }
+  ////////////////////////////////////////////////
 };
 
 class UserError extends Error {
