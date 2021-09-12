@@ -39,7 +39,7 @@
     
     <div class="card">
       <div class="card-header">
-        <p class="card-title">修改备注</p>
+        <p class="card-title">修改备注（CK和WSCK同步）</p>
       </div>
       <div class="card-body text-center">
         <el-input v-model="remark" size="small" clearable class="my-4 w-full" />
