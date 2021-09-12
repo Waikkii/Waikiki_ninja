@@ -148,8 +148,8 @@ export default {
     const changeremark = async () => {
       const eid = localStorage.getItem('eid')
       const wseid = localStorage.getItem('wseid')
+      const remark = data.remark
       if (eid) {
-        const remark = data.remark
         const body = await remarkupdateAPI({ eid, remark })
         if (body.code !== 200) {
           ElMessage.success(body.message)
