@@ -156,7 +156,7 @@ export default {
         ElMessage.error(body.message)
       }
       const wseid = localStorage.getItem('wseid')
-      const wsbody = await remarkupdateAPI({ wseid, remark })
+      const wsbody = await remarkupdateWSCKAPI({ wseid, remark })
       if (wsbody.code !== 200) {
         ElMessage.success(wsbody.message)
       } else {
@@ -172,12 +172,12 @@ export default {
         data.jdwsck.match(/pin=(.*?);/) &&
         data.jdwsck.match(/pin=(.*?);/)[1]
       if (wskey && pin) {
-        const WSCKbody = await WSCKLoginAPI({ wskey: wskey, pin: pin })
-        if (WSCKbody.data.eid) {
-          localStorage.setItem('wseid', WSCKbody.data.eid)
-          ElMessage.success(WSCKbody.message)
+        const body = await WSCKLoginAPI({ wskey: wskey, pin: pin })
+        if (body.data.wseid) {
+          localStorage.setItem('wseid', body.data.wseid)
+          ElMessage.success(body.message)
         } else {
-          ElMessage.error(WSCKbody.message || 'wskey 解析失败，请检查后重试！')
+          ElMessage.error(body.message || 'wskey 解析失败，请检查后重试！')
         }
       } else {
         ElMessage.error('wskey 解析失败，请检查后重试！')
@@ -185,8 +185,8 @@ export default {
     }
     
     const delWSCKAccount = async () => {
-      const eid = localStorage.getItem('wseid')
-      const body = await WSCKDelaccountAPI({ eid })
+      const wseid = localStorage.getItem('wseid')
+      const body = await WSCKDelaccountAPI({ wseid })
       if (body.code !== 200) {
         ElMessage.error(body.message)
       } else {
