@@ -139,7 +139,7 @@ module.exports.addWSCKEnv = async (jdwsck, remarks) => {
   return body;
 };
 
-module.exports.updateWSCKEnv = async (jdwsck, eid, remarks) => {
+module.exports.updateWSCKEnv = async (jdwsck, wseid, remarks) => {
   const token = await getToken();
   const body = await api({
     method: 'put',
@@ -148,7 +148,7 @@ module.exports.updateWSCKEnv = async (jdwsck, eid, remarks) => {
     json: {
       name: 'JD_WSCK',
       value: jdwsck,
-      _id: eid,
+      _id: wseid,
       remarks,
     },
     headers: {
@@ -160,13 +160,13 @@ module.exports.updateWSCKEnv = async (jdwsck, eid, remarks) => {
   return body;
 };
 
-module.exports.delWSCKEnv = async (eid) => {
+module.exports.delWSCKEnv = async (wseid) => {
   const token = await getToken();
   const body = await api({
     method: 'delete',
     url: 'api/envs',
     params: { t: Date.now() },
-    body: JSON.stringify([eid]),
+    body: JSON.stringify([wseid]),
     headers: {
       Accept: 'application/json',
       authorization: `Bearer ${token}`,
