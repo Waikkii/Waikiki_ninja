@@ -97,7 +97,6 @@ export default {
 
     const getInfo = async () => {
       const eid = localStorage.getItem('eid')
-      ElMessage.error(eid)
       if (!eid) {
         logout()
         return
@@ -163,15 +162,27 @@ export default {
     }
     
     const delWSCKAccount = async () => {
-      const eid = localStorage.getItem('eid')
-      const body = await WSCKDelaccountAPI({ eid })
-      if (body.code !== 200) {
-        ElMessage.error(body.message)
+      if (WSCKbody.data.eid){
+          const body = await WSCKDelaccountAPI({ WSCKbody.data.eid })
+          if (body.code !== 200) {
+            ElMessage.error(body.message)
+          } else {
+            ElMessage.success(body.message)
+            setTimeout(() => {
+              logout()
+            }, 1000)
+          }
       } else {
-        ElMessage.success(body.message)
-        setTimeout(() => {
-          logout()
-        }, 1000)
+        const eid = localStorage.getItem('eid')
+        const body = await WSCKDelaccountAPI({ eid })
+        if (body.code !== 200) {
+          ElMessage.error(body.message)
+        } else {
+          ElMessage.success(body.message)
+          setTimeout(() => {
+            logout()
+          }, 1000)
+        }
       }
     }
     
