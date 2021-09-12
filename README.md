@@ -1,18 +1,20 @@
 # Ninja
 
-Ninja原作者：@MoonBegonia
+## 致谢
+
+感谢Ninja原作者：@MoonBegonia
 
 仓库地址：https://github.com/MoonBegonia/ninja
 
-WSKEY录入原作者：@huiyi9420
+感谢WSCK功能原作者：@huiyi9420
 
 仓库地址：https://github.com/huiyi9420/ninja
 
-当前：支持CK注册和登录，支持WSKEY录入，登录成功进入个人中心，可修改备注。默认登录CK才可提交WSCK。
+## 特性
+
+当前：支持CK注册，登录和删除，支持WSKEY录入和删除，登录成功进入个人中心，可修改备注。默认登录CK才可提交WSCK。
 
 新特性：支持Github Action前端编译并自动替换文件。Fork之后：Action->BuildAndCommit->Run workflow->Run workfilow即可。
-
-想删除WSCK的提PR吧。
 
 ## 说明
 
@@ -29,7 +31,7 @@ Ninja 仅支持 qinglong 2.8.2+
 - [x] 扫码发送通知可关闭
 - [x] 默认备注为账号
 - [x] 可修改备注
-- [ ] wskey有效性检测
+- [x] wskey有效性检测
 - [x] 登录界面展示自定义标语
 - [x] Github Action自动编译
 - [x] WSKEY录入
