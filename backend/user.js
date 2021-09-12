@@ -254,13 +254,13 @@ module.exports = class User {
 
   async updateRemark() {
     if (!this.eid || !this.remark || this.remark.replace(/(^\s*)|(\s*$)/g, '') === '') {
-      throw new UserError('参数错误', 240, 200);
+      throw new UserError('eid参数错误', 240, 200);
     }
 
     const envs = await getEnvs();
     const env = await envs.find((item) => item._id === this.eid);
     if (!env) {
-      throw new UserError('没有找到这个账户，重新登录试试看哦', 230, 200);
+      throw new UserError('没有找到这个ck账户，重新登录试试看哦', 230, 200);
     }
     this.cookie = env.value;
 
@@ -268,11 +268,11 @@ module.exports = class User {
 
     const updateEnvBody = await updateEnv(this.cookie, this.eid, remarks);
     if (updateEnvBody.code !== 200) {
-      throw new UserError('更新/上传备注出错，请重试', 241, 200);
+      throw new UserError('ck更新/上传备注出错，请重试', 241, 200);
     }
 
     return {
-      message: '更新/上传备注成功',
+      message: 'ck更新/上传备注成功',
     };
   }
 
@@ -358,7 +358,7 @@ module.exports = class User {
 
   async updateWSCKRemark() {
     if (!this.wseid || !this.remark || this.remark.replace(/(^\s*)|(\s*$)/g, '') === '') {
-      throw new UserError('参数错误', 240, 200);
+      throw new UserError('wseid参数错误', 240, 200);
     }
 
     const envs = await getWSCKEnvs();
@@ -372,11 +372,11 @@ module.exports = class User {
 
     const updateEnvBody = await updateWSCKEnv(this.jdwsck, this.wseid, remarks);
     if (updateEnvBody.code !== 200) {
-      throw new UserError('更新/上传备注出错，请重试', 241, 200);
+      throw new UserError('wskey更新/上传备注出错，请重试', 241, 200);
     }
 
     return {
-      message: '更新/上传备注成功',
+      message: 'wskey更新/上传备注成功',
     };
   }
 
