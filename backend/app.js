@@ -126,25 +126,25 @@ router.post('/api/WSCKLogin', body(), async (ctx) => {
 
 router.get('/api/WSCKUserinfo', async (ctx) => {
   const query = ctx.query;
-  const eid = query.wseid;
-  const user = new User({ eid });
+  const wseid = query.wseid;
+  const user = new User({ wseid });
   const data = await user.getWSCKUserInfoByEid();
   ctx.body = { data };
 });
 
 router.post('/api/WSCKDelaccount', body(), async (ctx) => {
   const body = ctx.request.body;
-  const eid = body.wseid;
-  const user = new User({ eid });
+  const waeid = body.wseid;
+  const user = new User({ waeid });
   const data = await user.delWSCKUserByEid();
   ctx.body = { data };
 });
 
 router.post('/api/updateWSCK/remark', body(), async (ctx) => {
   const body = ctx.request.body;
-  const eid = body.wseid;
+  const waeid = body.wseid;
   const remark = body.remark;
-  const user = new User({ eid, remark });
+  const user = new User({ waeid, remark });
   const data = await user.updateWSCKRemark();
   ctx.body = { data };
 });
