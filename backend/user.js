@@ -29,6 +29,7 @@ module.exports = class User {
   msg;// 新增变量
   cookie;
   eid;
+  wseid
   timestamp;
   nickName;
   token;
@@ -38,7 +39,7 @@ module.exports = class User {
   remark;
   #s_token;
   // 新增wskey构造入参
-  constructor({ token, okl_token, cookies, pt_key, pt_pin, cookie, eid, remarks, remark, ua, pin, wskey, jdwsck}) {
+  constructor({ token, okl_token, cookies, pt_key, pt_pin, cookie, eid, wseid, remarks, remark, ua, pin, wskey, jdwsck}) {
     this.token = token;
     this.okl_token = okl_token;
     this.cookies = cookies;
@@ -46,6 +47,7 @@ module.exports = class User {
     this.pt_pin = pt_pin;
     this.cookie = cookie;
     this.eid = eid;
+    this.wseid = wseid;
     this.remark = remark;
     this.ua = ua;
 
@@ -306,14 +308,14 @@ module.exports = class User {
         if (body.code !== 200) {
           throw new UserError(body.message || '添加账户错误，请重试', 220, body.code || 200);
         }
-        this.eid = body.data[0]._id;
+        this.wseid = body.data[0]._id;
         this.timestamp = body.data[0].timestamp;
         message = `录入成功，${this.pin}`;
         this.#sendNotify('Ninja 运行通知', `用户 ${this.pin} WSCK 添加成功`);
       }
     } else {
-      this.eid = env._id;
-      const body = await updateWSCKEnv(this.jdwsck, this.eid);
+      this.wseid = env._id;
+      const body = await updateWSCKEnv(this.jdwsck, this.wseid);
       if (body.code !== 200) {
         throw new UserError(body.message || '更新账户错误，请重试', 221, body.code || 200);
       }
@@ -326,6 +328,7 @@ module.exports = class User {
     return {
       nickName: this.nickName,
       eid: this.eid,
+      wseid: this.wseid,
       timestamp: this.timestamp,
       message,
     };
@@ -334,7 +337,7 @@ module.exports = class User {
   //不查nickname了，用remark代替
   async getWSCKUserInfoByEid() {
     const envs = await getWSCKEnvs();
-    const env = await envs.find((item) => item._id === this.eid);
+    const env = await envs.find((item) => item._id === this.wseid);
     if (!env) {
       throw new UserError('没有找到这个账户，重新登录试试看哦', 230, 200);
     }
@@ -347,19 +350,19 @@ module.exports = class User {
     // await this.#getNickname();
     return {
       nickName: this.remark,
-      eid: this.eid,
+      wseid: this.wseid,
       timestamp: this.timestamp,
       remark: this.remark,
     };
   }
 
   async updateWSCKRemark() {
-    if (!this.eid || !this.remark || this.remark.replace(/(^\s*)|(\s*$)/g, '') === '') {
+    if (!this.wseid || !this.remark || this.remark.replace(/(^\s*)|(\s*$)/g, '') === '') {
       throw new UserError('参数错误', 240, 200);
     }
 
     const envs = await getWSCKEnvs();
-    const env = await envs.find((item) => item._id === this.eid);
+    const env = await envs.find((item) => item._id === this.wseid);
     if (!env) {
       throw new UserError('没有找到这个wskey账户，重新登录试试看哦', 230, 200);
     }
@@ -367,7 +370,7 @@ module.exports = class User {
 
     const remarks = `remark=${this.remark};`;
 
-    const updateEnvBody = await updateWSCKEnv(this.jdwsck, this.eid, remarks);
+    const updateEnvBody = await updateWSCKEnv(this.jdwsck, this.wseid, remarks);
     if (updateEnvBody.code !== 200) {
       throw new UserError('更新/上传备注出错，请重试', 241, 200);
     }
@@ -379,7 +382,7 @@ module.exports = class User {
 
   async delWSCKUserByEid() {
     await this.getWSCKUserInfoByEid();
-    const body = await delWSCKEnv(this.eid);
+    const body = await delWSCKEnv(this.wseid);
     if (body.code !== 200) {
       throw new UserError(body.message || '删除账户错误，请重试', 240, body.code || 200);
     }
@@ -517,6 +520,7 @@ module.exports = class User {
     if (this.pt_key&&this.pt_pin) {
       this.cookie = 'pt_key=' + this.pt_key + ';pt_pin=' + this.pt_pin + ';';
       const result = await this.CKLogin();
+      this.eid = result.eid
       result.errcode = 0;
       return result;
     }
