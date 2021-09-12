@@ -97,31 +97,31 @@ export default {
 
     const getInfo = async () => {
       const eid = localStorage.getItem('eid')
-      if (!eid) {
+      const wseid = localStorage.getItem('wseid')
+      if (!eid && !wseid) {
         logout()
         return
       }
-      const userInfo = await getUserInfoAPI(eid)
-      ElMessage.error(userInfo.code)
-      ElMessage.error(userInfo.data)
-      if (!userInfo) {
-        ElMessage.error('获取用户CK信息失败，请重重新登录')
-        logout()
-        return
+      if (eid) {
+        const userInfo = await getUserInfoAPI(eid)
+        if (!userInfo) {
+          ElMessage.error('获取用户CK信息失败，请重重新登录')
+          logout()
+          return
+        }
+        data.nickName = userInfo.data.nickName
+        data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
       }
-      data.nickName = userInfo.data.nickName
-      data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
-      if (userInfo.code == 230) {
-        const userWSCKInfo = await getWSCKUserinfoAPI(eid)
-        ElMessage.success(userWSCKInfo.code)
-        ElMessage.success(userWSCKInfo.data)
-        if (!userWSCKInfo) {
+      
+      if (wseid) {
+        const userInfo = await getWSCKUserinfoAPI(wseid)
+        if (!userInfo) {
           ElMessage.error('获取用户WSCK信息失败，请重重新登录')
           logout()
           return
         }
-        data.nickName = userWSCKInfo.data.nickName
-        data.timestamp = new Date(userWSCKInfo.data.timestamp).toLocaleString()
+        data.nickName = userInfo.data.nickName
+        data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
       }
     }
 
@@ -129,6 +129,7 @@ export default {
 
     const logout = () => {
       localStorage.removeItem('eid')
+      localStorage.removeItem('wseid')
       router.push('/login')
     }
 
@@ -154,6 +155,13 @@ export default {
       } else {
         ElMessage.error(body.message)
       }
+      const wseid = localStorage.getItem('wseid')
+      const wsbody = await remarkupdateAPI({ wseid, remark })
+      if (wsbody.code !== 200) {
+        ElMessage.success(wsbody.message)
+      } else {
+        ElMessage.error(wsbody.message)
+      }
     }
     
     const WSCKLogin = async () => {
@@ -166,7 +174,7 @@ export default {
       if (wskey && pin) {
         const WSCKbody = await WSCKLoginAPI({ wskey: wskey, pin: pin })
         if (WSCKbody.data.eid) {
-          localStorage.setItem('eid', WSCKbody.data.eid)
+          localStorage.setItem('wseid', WSCKbody.data.eid)
           ElMessage.success(WSCKbody.message)
         } else {
           ElMessage.error(WSCKbody.message || 'wskey 解析失败，请检查后重试！')
@@ -177,7 +185,7 @@ export default {
     }
     
     const delWSCKAccount = async () => {
-      const eid = localStorage.getItem('eid')
+      const eid = localStorage.getItem('wseid')
       const body = await WSCKDelaccountAPI({ eid })
       if (body.code !== 200) {
         ElMessage.error(body.message)
