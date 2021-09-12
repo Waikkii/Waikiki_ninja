@@ -10,7 +10,7 @@
       </div>
       <div class="card-footer">
         <el-button size="small" auto @click="logout">退出登录</el-button>
-        <el-button type="danger" size="small" auto @click="delAccount">删除账号</el-button>
+        <el-button type="danger" size="small" auto @click="delAccount">删除CK</el-button>
       </div>
     </div>
     
@@ -19,8 +19,8 @@
           <p class="card-title">WSCK 录入</p>
             <div class="card-body text-base leading-6">
               <b>wskey有效期长达一年，请联系管理员确认使用，慎重！</b>
-              <p>删WSCK功能咕咕咕。</p>
-              <b>可以保持pin不变，随意更改wskey，等同于删除WSCK。改密码解决一切CK泄露问题。</b>
+              <p>删WSCK在下方。</p>
+              <b>也可以保持pin不变，随意更改wskey，等同于删除WSCK。改密码解决一切CK泄露问题。</b>
               <p>用户须手动提取pin和wskey，格式如："pin=xxxxxx;wskey=xxxxxxxxxx;"。</p>
               <p class="card-subtitle">——IOS用户手机抓包APP&emsp;<a style="" href="https://apps.apple.com/cn/app/stream/id1312141691" target="_blank" id="downiOSApp">点击跳转安装</a> </p>
               <p class="card-subtitle">——在api.m.jd.com域名下找POST请求大概率能找到wskey。</p>
@@ -29,10 +29,11 @@
             </div>
       </div>
       <div class="card-body text-center">
-        <el-input v-model="jdwsck" size="small" clearable class="my-4 w-full" />
+        <el-input v-model="jdwsck" placeholder="pin=xxxxxx;wskey=xxxxxxxxxx;" size="small" clearable class="my-4 w-full" />
       </div>
       <div class="card-footer">
-        <el-button type="success" size="small" auto @click="WSCKLogin">录入WSCK</el-button>
+        <el-button type="success" size="small" auto @click="WSCKLogin">重新录入</el-button>
+        <el-button type="danger" size="small" auto @click="delWSCKAccount">删除WSCK</el-button>
       </div>
     </div>
     
@@ -77,7 +78,7 @@
 </template>
 
 <script>
-import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI } from '@/api/index'
+import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI, WSCKDelaccountAPI } from '@/api/index'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -161,6 +162,19 @@ export default {
       }
     }
     
+    const delWSCKAccount = async () => {
+      const eid = localStorage.getItem('eid')
+      const body = await WSCKDelaccountAPI({ eid })
+      if (body.code !== 200) {
+        ElMessage.error(body.message)
+      } else {
+        ElMessage.success(body.message)
+        setTimeout(() => {
+          logout()
+        }, 1000)
+      }
+    }
+    
     const openUrlWithJD = (url) => {
       const params = encodeURIComponent(
         `{"category":"jump","des":"m","action":"to","url":"${url}"}`
@@ -233,6 +247,7 @@ export default {
       delAccount,
       changeremark,
       WSCKLogin,
+      delWSCKAccount,
       openUrlWithJD,
     }
   },
