@@ -102,6 +102,8 @@ export default {
         return
       }
       const userInfo = await getUserInfoAPI(eid)
+      ElMessage.error(userInfo.code)
+      ElMessage.error(userInfo.data)
       if (!userInfo) {
         ElMessage.error('获取用户CK信息失败，请重重新登录')
         logout()
@@ -111,6 +113,8 @@ export default {
       data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
       if (userInfo.code == 230) {
         const userWSCKInfo = await getWSCKUserinfoAPI(eid)
+        ElMessage.success(userWSCKInfo.code)
+        ElMessage.success(userWSCKInfo.data)
         if (!userWSCKInfo) {
           ElMessage.error('获取用户WSCK信息失败，请重重新登录')
           logout()
