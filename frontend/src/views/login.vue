@@ -230,8 +230,8 @@ export default {
         data.jdwsck.match(/pin=(.*?);/)[1]
       if (wskey && pin) {
         const body = await WSCKLoginAPI({ wskey: wskey, pin: pin })
-        if (body.data.eid) {
-          localStorage.setItem('wseid', body.data.eid)
+        if (body.data.wseid) {
+          localStorage.setItem('wseid', body.data.wseid)
           ElMessage.success(body.message)
           router.push('/')
         } else {
