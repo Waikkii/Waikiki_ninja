@@ -47,3 +47,7 @@ export function getWSCKUserinfoAPI(eid) {
 export function WSCKDelaccountAPI(body) {
   return api.post('WSCKDelaccount', { json: body }).json()
 }
+
+export function remarkupdateWSCKAPI(body) {
+  return api.post('updateWSCK/remark', { json: body }).json()
+}
