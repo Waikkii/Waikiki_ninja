@@ -1,4 +1,4 @@
-# Ninja
+# Ninja (基本功能已完善，鸽几天，有问题先仔细看此README，有需求可以提PR)
 
 ## 致谢
 
@@ -149,7 +149,7 @@ QL_URL=http://localhost:5700
 - `ALLOW_WSCK_ADD`：是否允许添加WSCK账号 不允许添加时则只允许已有账号登录
 - `ALLOW_WSCK_NUM`：允许添加WSCK账号的最大数量
 - `ALLOW_ADD`: 是否允许添加账号 不允许添加时则只允许已有账号登录（默认 `true`）
-- `ALLOW_NUM`: 允许添加账号的最大数量（默认 `40`）
+- `ALLOW_NUM`: 允许添加账号的最大数量（默认 `45`）
 - `NINJA_PORT`: Ninja 运行端口（默认 `5701`）
 - `NINJA_NOTIFY`: 是否开启通知功能（默认 `true`）
 - `NINJA_UA`: 自定义 UA，默认为随机
@@ -174,7 +174,7 @@ pm2 start
 
 ### Ninja 自定义
 
-自定义推送二维码：将 `push.jpg` 文件添加到 `/ql/ninja/backend/static/` 目录下刷新网页即可。
+（未完成）自定义推送二维码：将 `push.jpg` 文件添加到 `/ql/ninja/backend/static/` 目录下刷新网页即可。
 
 自定义常见活动：修改 `/ql/backend/static/activity.json` 即可
 
