@@ -330,7 +330,8 @@ module.exports = class User {
       message,
     };
   }
-
+  
+  //不查nickname了，用remark代替
   async getWSCKUserInfoByEid() {
     const envs = await getWSCKEnvs();
     const env = await envs.find((item) => item._id === this.eid);
@@ -343,9 +344,9 @@ module.exports = class User {
     if (remarks) {
       this.remark = remarks.match(/remark=(.*?);/) && remarks.match(/remark=(.*?);/)[1];
     }
-    await this.#getNickname();
+    // await this.#getNickname();
     return {
-      nickName: this.nickName,
+      nickName: this.remark,
       eid: this.eid,
       timestamp: this.timestamp,
       remark: this.remark,
