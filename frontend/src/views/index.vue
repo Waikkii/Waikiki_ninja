@@ -109,7 +109,7 @@ export default {
       }
       data.nickName = userInfo.data.nickName
       data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
-      if (!userInfo.data) {
+      if (userInfo.code == 230) {
         const userWSCKInfo = await getWSCKUserinfoAPI(eid)
         if (!userWSCKInfo) {
           ElMessage.error('获取用户WSCK信息失败，请重重新登录')
