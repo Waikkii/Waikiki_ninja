@@ -231,7 +231,7 @@ export default {
       if (wskey && pin) {
         const body = await WSCKLoginAPI({ wskey: wskey, pin: pin })
         if (body.data.eid) {
-          localStorage.setItem('eid', body.data.eid)
+          localStorage.setItem('wseid', body.data.eid)
           ElMessage.success(body.message)
           router.push('/')
         } else {
