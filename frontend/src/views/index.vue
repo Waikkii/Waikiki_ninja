@@ -146,8 +146,9 @@ export default {
     }
     
     const changeremark = async () => {
+      const eid = localStorage.getItem('eid')
+      const wseid = localStorage.getItem('wseid')
       if (eid) {
-        const eid = localStorage.getItem('eid')
         const remark = data.remark
         const body = await remarkupdateAPI({ eid, remark })
         if (body.code !== 200) {
@@ -157,7 +158,6 @@ export default {
         }
       }
       if (wseid) {
-        const wseid = localStorage.getItem('wseid')
         const wsbody = await remarkupdateWSCKAPI({ wseid, remark })
         if (wsbody.code !== 200) {
           ElMessage.success(wsbody.message)
