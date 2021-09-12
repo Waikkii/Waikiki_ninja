@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI, WSCKDelaccountAPI } from '@/api/index'
+import { getUserInfoAPI, delAccountAPI, remarkupdateAPI, WSCKLoginAPI, WSCKDelaccountAPI, remarkupdateWSCKAPI } from '@/api/index'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -89,7 +89,6 @@ export default {
 
     let data = reactive({
       remark: '',
-      WSCKbody: undefined,
       jdwsck: undefined,
       nickName: undefined,
       timestamp: undefined,
