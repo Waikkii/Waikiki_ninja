@@ -103,12 +103,22 @@ export default {
       }
       const userInfo = await getUserInfoAPI(eid)
       if (!userInfo) {
-        ElMessage.error('获取用户信息失败，请重重新登录')
+        ElMessage.error('获取用户CK信息失败，请重重新登录')
         logout()
         return
       }
       data.nickName = userInfo.data.nickName
       data.timestamp = new Date(userInfo.data.timestamp).toLocaleString()
+      if (!userInfo.data) {
+        const userWSCKInfo = await getWSCKUserinfoAPI(eid)
+        if (!userWSCKInfo) {
+          ElMessage.error('获取用户WSCK信息失败，请重重新登录')
+          logout()
+          return
+        }
+        data.nickName = userWSCKInfo.data.nickName
+        data.timestamp = new Date(userWSCKInfo.data.timestamp).toLocaleString()
+      }
     }
 
     onMounted(getInfo)
