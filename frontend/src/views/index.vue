@@ -163,26 +163,18 @@ export default {
     
     const delWSCKAccount = async () => {
       if (WSCKbody.data.eid){
-          const body = await WSCKDelaccountAPI({ WSCKbody.data.eid })
-          if (body.code !== 200) {
-            ElMessage.error(body.message)
-          } else {
-            ElMessage.success(body.message)
-            setTimeout(() => {
-              logout()
-            }, 1000)
-          }
+          const eid = WSCKbody.data.eid
       } else {
-        const eid = localStorage.getItem('eid')
-        const body = await WSCKDelaccountAPI({ eid })
-        if (body.code !== 200) {
-          ElMessage.error(body.message)
-        } else {
-          ElMessage.success(body.message)
-          setTimeout(() => {
-            logout()
-          }, 1000)
-        }
+          const eid = localStorage.getItem('eid')
+      }
+      const body = await WSCKDelaccountAPI({ eid })
+      if (body.code !== 200) {
+        ElMessage.error(body.message)
+      } else {
+        ElMessage.success(body.message)
+        setTimeout(() => {
+          logout()
+        }, 1000)
       }
     }
     
