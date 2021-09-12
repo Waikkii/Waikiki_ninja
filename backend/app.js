@@ -126,7 +126,7 @@ router.post('/api/WSCKLogin', body(), async (ctx) => {
 
 router.get('/api/WSCKUserinfo', async (ctx) => {
   const query = ctx.query;
-  const eid = query.eid;
+  const eid = query.wseid;
   const user = new User({ eid });
   const data = await user.getWSCKUserInfoByEid();
   ctx.body = { data };
@@ -134,7 +134,7 @@ router.get('/api/WSCKUserinfo', async (ctx) => {
 
 router.post('/api/WSCKDelaccount', body(), async (ctx) => {
   const body = ctx.request.body;
-  const eid = body.eid;
+  const eid = body.wseid;
   const user = new User({ eid });
   const data = await user.delWSCKUserByEid();
   ctx.body = { data };
@@ -142,7 +142,7 @@ router.post('/api/WSCKDelaccount', body(), async (ctx) => {
 
 router.post('/api/updateWSCK/remark', body(), async (ctx) => {
   const body = ctx.request.body;
-  const eid = body.eid;
+  const eid = body.wseid;
   const remark = body.remark;
   const user = new User({ eid, remark });
   const data = await user.updateWSCKRemark();
