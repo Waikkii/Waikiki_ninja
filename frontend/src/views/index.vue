@@ -96,6 +96,7 @@ export default {
 
     const getInfo = async () => {
       const eid = localStorage.getItem('eid')
+      ElMessage.error(eid)
       if (!eid) {
         logout()
         return
