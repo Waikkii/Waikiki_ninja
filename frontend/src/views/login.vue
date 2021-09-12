@@ -57,7 +57,7 @@
         <span class="card-subtitle"> 请在下方输入您的 WSCK  </span>
       </div>
       <div class="card-body text-center">
-        <el-input v-model="jdwsck" size="small" clearable class="my-4 w-full" />
+        <el-input v-model="jdwsck" placeholder="pin=xxxxxx;wskey=xxxxxxxxxx;" size="small" clearable class="my-4 w-full" />
         <el-button type="primary" size="small" round @click="WSCKLogin">录入</el-button>
       </div>
       <div class="card-footet"></div>
