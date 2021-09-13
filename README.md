@@ -200,10 +200,8 @@ pm2 start
 ## 如何删除Ninja
 
 ```bash
-cd /ql/ninja/backend
+cd /ql/ninja
 pm2 delete ninja
-cd ..
-cd ..
 rm -rf *
 rm -r ./.*
 ```
