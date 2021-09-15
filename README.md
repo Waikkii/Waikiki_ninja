@@ -195,6 +195,7 @@ pm2 start
 cd /ql/ninja
 git checkout .
 git pull
+cd backend
 pm2 start
 ```
 
