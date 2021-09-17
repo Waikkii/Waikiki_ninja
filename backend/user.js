@@ -425,7 +425,8 @@ module.exports = class User {
   }
 
   async #getNickname(nocheck) {
-    const body = await api({
+    let body;
+    body = await api({
       url: `https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&_=${Date.now()}&sceneval=2&g_login_type=1&g_ty=ls`,
       headers: {
         Accept: '*/*',
@@ -439,6 +440,17 @@ module.exports = class User {
         Host: 'me-api.jd.com',
       },
     }).json();
+    if (!body.data?.userInfo) {
+      body = await api({
+        url: `https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder`,
+        headers: {
+          Cookie: this.cookie,
+          Referer: 'https://home.m.jd.com/myJd/home.action',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
+        },
+      }).json();
+    }
     if (!body.data?.userInfo && this.jdwsck) {
       throw new UserError('获取用户信息失败，请检查您的 wskey ！', 201, 200);
     } else if (!body.data?.userInfo && !nocheck) {
