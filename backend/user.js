@@ -451,6 +451,7 @@ module.exports = class User {
         },
       }).json();
     }
+    
     if (!body.data?.userInfo && this.jdwsck) {
       throw new UserError('获取用户信息失败，请检查您的 wskey ！', 201, 200);
     } else if (!body.data?.userInfo && !nocheck) {
