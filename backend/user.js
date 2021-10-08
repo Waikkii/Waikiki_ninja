@@ -426,6 +426,7 @@ module.exports = class User {
 
   async #getNickname(nocheck) {
     let body;
+    let body_bak;
     body = await api({
       url: `https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&_=${Date.now()}&sceneval=2&g_login_type=1&g_ty=ls`,
       headers: {
@@ -440,10 +441,12 @@ module.exports = class User {
         Host: 'me-api.jd.com',
       },
     }).json();
-    if (!body.data?.userInfo) {
-      body = await api({
+
+    if (!body.data?.userInfo && !nocheck) {
+      body_bak = await api({
         url: `https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder`,
         headers: {
+          Connection: 'keep-alive',
           Cookie: this.cookie,
           Referer: 'https://home.m.jd.com/myJd/home.action',
           'User-Agent':
@@ -452,12 +455,19 @@ module.exports = class User {
       }).json();
     }
     
-    if (!body.data?.userInfo && this.jdwsck) {
+    if (!body.data?.userInfo && !body_bak?.data.userInfo && this.jdwsck && !nocheck) {
       throw new UserError('获取用户信息失败，请检查您的 wskey ！', 201, 200);
-    } else if (!body.data?.userInfo && !nocheck) {
+    } else if (!body.data?.userInfo && !body_bak?.data.userInfo && !nocheck) {
       throw new UserError('获取用户信息失败，请检查您的 cookie ！', 201, 200);
     }
-    this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
+    this.nickName = (body.data?.userInfo.baseInfo.nickname || body_bak?.data.userInfo.baseInfo.nickname) || decodeURIComponent(this.pt_pin);
+
+    // if (!body.data?.userInfo && this.jdwsck) {
+    //   throw new UserError('获取用户信息失败，请检查您的 wskey ！', 201, 200);
+    // } else if (!body.data?.userInfo && !nocheck) {
+    //   throw new UserError('获取用户信息失败，请检查您的 cookie ！', 201, 200);
+    // }
+    // this.nickName = body.data?.userInfo.baseInfo.nickname || decodeURIComponent(this.pt_pin);
   }
 
   #formatSetCookies(headers, body) {
