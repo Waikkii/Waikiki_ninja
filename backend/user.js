@@ -52,7 +52,7 @@ module.exports = class User {
     this.ua = ua;
 
     if (pt_key && pt_pin) {
-      this.cookie = 'pt_key=' + this.pt_key + ';pt_pin=' + this.pt_pin + ';';
+      this.cookie = 'pt_key=' + this.pt_key + ';pt_pin=' +encodeURIComponent(this.pt_pin) + ';';
     }
 
     if (cookie) {
