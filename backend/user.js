@@ -17,6 +17,17 @@ const api = got.extend({
   retry: { limit: 0 },
   responseType: 'json',
 });
+function funcChina(obj){
+
+  
+  
+    if(/.*[\u4e00-\u9fa5]+.*$/.test(obj)) { 
+      return true  
+    } 
+  
+    return false;
+  
+  } 
 
 module.exports = class User {
   ua;
@@ -38,13 +49,14 @@ module.exports = class User {
   QRCode;
   remark;
   #s_token;
-  // 新增wskey构造入参
+  
+  // 新增wskey构造入参123
   constructor({ token, okl_token, cookies, pt_key, pt_pin, cookie, eid, wseid, remarks, remark, ua, pin, wskey, jdwsck}) {
     this.token = token;
     this.okl_token = okl_token;
     this.cookies = cookies;
     this.pt_key = pt_key;
-    this.pt_pin = encodeURIComponent(pt_pin);
+    this.pt_pin = funcChina(pt_pin)?encodeURIComponent(pt_pin):pt_pin;
     this.cookie = cookie;
     this.eid = eid;
     this.wseid = wseid;
